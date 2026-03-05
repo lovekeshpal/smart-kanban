@@ -1,5 +1,7 @@
 import { Injectable, signal, computed, effect } from '@angular/core';
-import { Task } from '../../features/board/models/task.model';
+import { Task, TaskPriority } from '../../features/board/models/task.model';
+
+const STORAGE_KEY = 'kanban_tasks';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +11,7 @@ export class BoardStore {
   // STATE
   // =====================
 
-  private tasks = signal<Task[]>([]);
+  private tasks = signal<Task[]>(this.loadTasks());
 
   // =====================
   // COMPUTED VALUES
@@ -38,15 +40,24 @@ export class BoardStore {
     return Math.round((this.completedTasks() / total) * 100);
   });
 
+  highPriorityTasks = computed(() =>
+    this.tasks().filter((task) => task.priority === 'high' && task.status !== 'done'),
+  );
+
+  activeTasks = computed(() =>
+    this.tasks().filter((task) => task.status !== 'done').length,
+  );
+
   // =====================
   // MUTATIONS
   // =====================
 
-  addTask(title: string) {
+  addTask(title: string, priority: TaskPriority = 'medium') {
     const newTask: Task = {
       id: crypto.randomUUID(),
       title,
       status: 'todo',
+      priority,
       createdAt: Date.now(),
     };
 
@@ -55,12 +66,42 @@ export class BoardStore {
 
   updateTaskStatus(taskId: string, status: Task['status']) {
     this.tasks.update((tasks) =>
-      tasks.map((task) => (task.id === taskId ? { ...task, status } : task)),
+      tasks.map((task) => 
+        task.id === taskId 
+          ? { ...task, status, updatedAt: Date.now() } 
+          : task
+      ),
     );
+  }
+
+  updateTask(taskId: string, updates: Partial<Task>) {
+    this.tasks.update((tasks) =>
+      tasks.map((task) => 
+        task.id === taskId 
+          ? { ...task, ...updates, updatedAt: Date.now() } 
+          : task
+      ),
+    );
+  }
+
+  updateTaskPriority(taskId: string, priority: TaskPriority) {
+    this.updateTask(taskId, { priority });
+  }
+
+  updateTaskDescription(taskId: string, description: string) {
+    this.updateTask(taskId, { description });
   }
 
   deleteTask(taskId: string) {
     this.tasks.update((tasks) => tasks.filter((task) => task.id !== taskId));
+  }
+
+  clearCompleted() {
+    this.tasks.update((tasks) => tasks.filter((task) => task.status !== 'done'));
+  }
+
+  clearAll() {
+    this.tasks.set([]);
   }
 
   // =====================
@@ -69,7 +110,26 @@ export class BoardStore {
 
   constructor() {
     effect(() => {
-      console.log('Tasks changed:', this.tasks());
+      const tasks = this.tasks();
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(tasks)
+      );
     });
+  }
+
+  private loadTasks(): Task[] {
+    const saved = localStorage.getItem(STORAGE_KEY);
+
+    if (!saved) {
+      return [];
+    }
+
+    try {
+      return JSON.parse(saved);
+    } catch {
+      return [];
+    }
   }
 }
