@@ -1,10 +1,16 @@
-<div class="min-h-screen bg-gradient-to-b from-indigo-50 to-indigo-100 p-4 md:p-8">
+<div
+  class="min-h-screen bg-gradient-to-b from-indigo-50 to-indigo-100 p-4 md:p-8"
+>
   <!-- Header Section -->
   <div class="max-w-6xl mx-auto mb-8">
     <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-      <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-white">
+      <div
+        class="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-white"
+      >
         <h1 class="text-4xl font-bold mb-2">📊 Smart Kanban Board</h1>
-        <p class="text-indigo-100">Organize your tasks efficiently and track your progress</p>
+        <p class="text-indigo-100">
+          Organize your tasks efficiently and track your progress
+        </p>
       </div>
 
       <!-- Task Input Section -->
@@ -17,7 +23,7 @@
             (keyup.enter)="createTask()"
             placeholder="Add a new task..."
             class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors"
-          >
+          />
           <div class="relative">
             <select
               [(ngModel)]="selectedPriority"
@@ -28,9 +34,21 @@
               <option value="medium">🟡 Medium</option>
               <option value="high">🔴 High</option>
             </select>
-            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-              <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"></path>
+            <div
+              class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+            >
+              <svg
+                class="w-5 h-5 text-indigo-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 9l6 6 6-6"
+                ></path>
               </svg>
             </div>
           </div>
@@ -49,22 +67,21 @@
           </div>
           <div class="flex gap-3">
             @if (boardStore.completedTasks() > 0) {
-              <button
-                (click)="clearCompleted()"
-                class="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                title="Clear completed tasks"
-              >
-                🧹 Clear Completed
-              </button>
-            }
-            @if (boardStore.totalTasks() > 0) {
-              <button
-                (click)="clearAll()"
-                class="px-4 py-2 text-sm text-red-700 bg-red-100 rounded-lg hover:bg-red-200 transition-colors"
-                title="Delete all tasks"
-              >
-                🗑️ Clear All
-              </button>
+            <button
+              (click)="clearCompleted()"
+              class="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              title="Clear completed tasks"
+            >
+              🧹 Clear Completed
+            </button>
+            } @if (boardStore.totalTasks() > 0) {
+            <button
+              (click)="clearAll()"
+              class="px-4 py-2 text-sm text-red-700 bg-red-100 rounded-lg hover:bg-red-200 transition-colors"
+              title="Delete all tasks"
+            >
+              🗑️ Clear All
+            </button>
             }
           </div>
         </div>
@@ -73,7 +90,9 @@
         <div class="space-y-2">
           <div class="flex justify-between items-center mb-2">
             <span class="font-semibold text-gray-700">Progress</span>
-            <span class="text-lg font-bold text-indigo-600">{{ boardStore.progress() }}%</span>
+            <span class="text-lg font-bold text-indigo-600"
+              >{{ boardStore.progress() }}%</span
+            >
           </div>
           <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
             <div
@@ -82,11 +101,15 @@
             ></div>
           </div>
           <div class="flex justify-between text-sm text-gray-600 mt-2">
-            <span>{{ boardStore.completedTasks() }} of {{ boardStore.totalTasks() }} tasks completed</span>
+            <span
+              >{{ boardStore.completedTasks() }} of {{ boardStore.totalTasks()
+              }} tasks completed</span
+            >
             @if (boardStore.highPriorityTasks().length > 0) {
-              <span class="text-red-600 font-semibold">
-                ⚠️ {{ boardStore.highPriorityTasks().length }} high-priority task{{ boardStore.highPriorityTasks().length !== 1 ? 's' : '' }}
-              </span>
+            <span class="text-red-600 font-semibold">
+              ⚠️ {{ boardStore.highPriorityTasks().length }} high-priority
+              task{{ boardStore.highPriorityTasks().length !== 1 ? 's' : '' }}
+            </span>
             }
           </div>
         </div>
@@ -96,21 +119,32 @@
 
   <!-- Board Section -->
   <div class="max-w-6xl mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <app-column 
-        title="To Do" 
+    <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> -->
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start"
+    >
+      <app-column
+        title="To Do"
         [tasks]="boardStore.todoTasks()"
-        colorClass="indigo">
+        colorClass="indigo"
+        [connectedLists]="['In Progress','Done']"
+      >
       </app-column>
-      <app-column 
-        title="In Progress" 
+
+      <app-column
+        title="In Progress"
         [tasks]="boardStore.inProgressTasks()"
-        colorClass="amber">
+        colorClass="amber"
+        [connectedLists]="['To Do','Done']"
+      >
       </app-column>
-      <app-column 
-        title="Done" 
+
+      <app-column
+        title="Done"
         [tasks]="boardStore.doneTasks()"
-        colorClass="emerald">
+        colorClass="emerald"
+        [connectedLists]="['To Do','In Progress']"
+      >
       </app-column>
     </div>
   </div>

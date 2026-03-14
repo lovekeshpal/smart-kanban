@@ -1,14 +1,21 @@
-<div class="bg-white rounded-lg border-l-4 border-indigo-500 p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing group">
+<div
+  cdkDrag
+  [cdkDragData]="task"
+  class="bg-gray-50 rounded-lg border-l-4 border border-indigo-500 p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing group"
+>
+  <!-- class="w-full bg-gray-50 border border-gray-300 rounded-lg border-l-4
+  border-indigo-500 p-4 shadow-md hover:shadow-xl hover:-translate-y-0.5
+  transition-all duration-200 cursor-grab active:cursor-grabbing group" -->
   <!-- Priority Badge -->
   @if (task.priority) {
-    <div class="flex justify-end mb-2">
-      <span 
-        class="text-xs font-semibold px-2 py-1 rounded-full"
-        [ngClass]="getPriorityColor(task.priority)"
-      >
-        {{ task.priority | uppercase }}
-      </span>
-    </div>
+  <div class="flex justify-end mb-2">
+    <span
+      class="text-xs font-semibold px-2 py-1 rounded-full"
+      [ngClass]="getPriorityColor(task.priority)"
+    >
+      {{ task.priority | uppercase }}
+    </span>
+  </div>
   }
 
   <!-- Task Title -->
@@ -16,9 +23,7 @@
 
   <!-- Task Description (if exists) -->
   @if (task.description) {
-    <p class="text-sm text-gray-600 mb-3 line-clamp-2">
-      {{ task.description }}
-    </p>
+  <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ task.description }}</p>
   }
 
   <!-- Created Date -->
@@ -27,7 +32,7 @@
   </p>
 
   <!-- Action Buttons -->
-  <div class="flex flex-wrap gap-2">
+  <div class="flex gap-2">
     <button
       (click)="moveToTodo()"
       class="text-xs px-2 py-1 rounded bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors opacity-0 group-hover:opacity-100"
